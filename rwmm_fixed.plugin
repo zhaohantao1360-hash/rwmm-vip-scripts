@@ -1,61 +1,14 @@
-/*
 #!name=让我喵喵 - 会员解锁 (修复版)
 #!desc=解锁让我喵喵App会员权益，支持多种响应格式
 #!author=哎呀漫鸭 & AI修复
 #!update=2026-06-24
 
-[Script]
-http-response https://www.pdreamer.com/aymyProd/api/getUserInfo script-path=https://raw.githubusercontent.com/Yu9191/Rewrite/main/rwmm.js,requires-body=1,timeout=10
-
-[Rewrite Local]
-# 方式1: 标准VIP响应
-https://www.pdreamer.com/aymyProd/api/getUserInfo url script-response-body https://raw.githubusercontent.com/Yu9191/Rewrite/main/rwmm_fixed.js
-
-# 方式2: 如果上面失效，试试这个路径匹配
-^https?:\/\/www\.pdreamer\.com.*(getUserInfo|userInfo|vip|member) url script-response-body https://raw.githubusercontent.com/Yu9191/Rewrite/main/rwmm_fixed.js
-
 [MITM]
 hostname = www.pdreamer.com
-*/
 
-// 下面是脚本正文 (修复版)
-const path = $request.url;
-const body = getFakeVipResponse();
-$done({ body: body });
+[Script]
+# 标准接口
+rwmm-userInfo = type=http-response, pattern=^https?://www\.pdreamer\.com/aymyProd/api/getUserInfo, requires-body=true, max-size=0, script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/main/rwmm_subscription.js, timeout=30
 
-function getFakeVipResponse() {
-    const now = new Date();
-    const future = new Date(now.getFullYear() + 10, now.getMonth(), now.getDate());
-    const expireTime = future.toISOString().replace('T', ' ').substring(0, 19);
-    const currentTime = now.toISOString().replace('T', ' ').substring(0, 19);
-    
-    // 返回兼容多种格式的VIP响应
-    return JSON.stringify({
-        code: 200,
-        msg: "success",
-        data: {
-            userId: 1145141919,
-            nickname: "SVIP会员",
-            avatar: "",
-            phone: "",
-            vip: true,
-            vipLevel: "SVIP",
-            isVip: true,
-            expireTime: expireTime,
-            startTime: currentTime,
-            vipDay: 9999,
-            totalVipDay: 9999,
-            createTime: currentTime,
-            // 额外兼容字段
-            member: {
-                status: 1,
-                level: 3,
-                expire: expireTime
-            },
-            // 旧版兼容
-            ret: 0,
-            vip_expire_time: expireTime,
-            svip: 1
-        }
-    });
-}
+# 兼容其他路径
+rwmm-userInfo2 = type=http-response, pattern=^https?://www\.pdreamer\.com.*?(getUserInfo|userInfo|vip|member), requires-body=true, max-size=0, script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/main/rwmm_subscription.js, timeout=30
