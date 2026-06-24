@@ -1,12 +1,14 @@
 /*
-#!name=让我喵喵 - 会员解锁(订阅版)
-#!desc=解锁让我喵喵App会员权益 - 订阅模式
-#!author=zhaohantao1360-hash
-#!date=2026-06-24
+让我喵喵 - 会员解锁(订阅版)
+解锁会员权益 - 订阅模式
+作者: zhaohantao1360-hash
+日期: 2026-06-24
 
 [rewrite_local]
+
 https://www.pdreamer.com/aymyProd/api/getUserInfo url script-response-body https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/main/rwmm_subscription.js
 
 [mitm]
+
 hostname = www.pdreamer.com
 */
