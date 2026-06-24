@@ -1,0 +1,12 @@
+#!name=让我喵喵 - 会员解锁
+#!desc=解锁让我喵喵App会员权益 - 订阅模式
+#!openUrl=javascript:void(0)
+#!author=zhaohantao1360-hash
+#!date=2026-06-24
+
+[MITM]
+hostname = www.pdreamer.com
+
+[Script]
+# 获取用户信息接口
+rwmm-userInfo = type=http-response, pattern=^https?://www\.pdreamer\.com.*?(getUserInfo|userInfo), requires-body=true, max-size=0,script-path= https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/main/rwmm_subscription.js, timeout=30
