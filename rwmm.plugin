@@ -1,5 +1,5 @@
 #!name=让我喵喵 - 会员解锁
-#!desc=解锁让我喵喵App会员权益（订阅模式）
+#!desc=解锁让我喵喵App会员权益（脚本内置）
 #!author=Yu9191 (原始脚本) / zhaohantao1360-hash (仓库维护)
 #!update=2026-06-27
 #!homepage=https://github.com/zhaohantao1360-hash/rwmm-vip-scripts
@@ -8,5 +8,4 @@
 hostname = www.pdreamer.com
 
 [Script]
-# 解锁 getUserInfo 会员权益
-解锁会员权益 = type=http-response, pattern=^https?://www\.pdreamer\.com/aymyProd/api/getUserInfo, requires-body=true, max-size=0, script-path=https://raw.githubusercontent.com/Yu9191/Rewrite/main/rwmm.js, timeout=60
+解锁会员权益 = type=http-response, pattern=^https?://www\.pdreamer\.com/aymyProd/api/getUserInfo, requires-body=true, max-size=0, script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/main/rwmm_subscription.js, timeout=60
