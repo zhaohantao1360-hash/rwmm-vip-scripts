@@ -1,0 +1,10 @@
+#!name=Sub Info Panel
+#!desc=Track subscription traffic and expiration from the Subscription-Userinfo header.\nSee used and remaining data, usage percentage, and the expiration date when available.
+#!category=gholts
+#!arguments=name:-, url
+
+[Script]
+sub-info-panel = type=generic,script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/gholts/scripts/sub-info-panel.js,argument=name={{{name}}}&url={{{url}}},timeout=10
+
+[Panel]
+SubInfo = title="Sub Info",content="Loading...",style=info,script-name=sub-info-panel,update-interval=3600
