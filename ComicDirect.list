@@ -3,13 +3,15 @@
 # 注意：这些站点在国内多数被墙，直连可能打不开；若图片加载失败，删掉引用行或把策略改回代理即可
 # Loon 引用：RULE-SET,https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/ComicDirect.list,DIRECT
 # Surge 引用：RULE-SET,https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/ComicDirect.list,DIRECT
+# 2026-10-01 核验：shilunart.com 已确认为停放域名（This domain is for sale），已移除
 
 DOMAIN-SUFFIX,ikanmh.xyz
 DOMAIN-SUFFIX,jjmhw9.top
 DOMAIN-SUFFIX,baozimh.org
 DOMAIN-SUFFIX,baozimh.one
 DOMAIN-SUFFIX,55comic.com
-DOMAIN-SUFFIX,kukanmanhua.com
 DOMAIN-SUFFIX,gufengmh9.com
 DOMAIN-SUFFIX,mhkami.com
 DOMAIN-SUFFIX,wmh1234.com
+DOMAIN-SUFFIX,kukanmanhua.com
+DOMAIN-SUFFIX,kukanmanhua.buzz
