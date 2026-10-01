@@ -1,0 +1,23 @@
+#!name = 让我喵喵 - 会员解锁
+#!desc = 解锁让我喵喵 App 会员权益。v3 就地修改原始响应的 VIP 字段，保留真实 userId/昵称/头像；仅处理用户信息接口，其它请求原样放行。
+#!author = 哎呀漫鸭 & AI改写
+#!tag = 解锁,工具
+#!type = normal
+
+[Script]
+# 标准接口
+http-response ^https?:\/\/www\.pdreamer\.com\/aymyProd\/api\/getUserInfo script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/%E8%AE%A9%E6%88%91%E5%96%B5%E5%96%B5v3.js,requires-body=true,timeout=30,tag=让我喵喵解锁
+# 兼容其它路径下的用户信息接口
+http-response ^https?:\/\/www\.pdreamer\.com.*?[uU]serInfo script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/%E8%AE%A9%E6%88%91%E5%96%B5%E5%96%B5v3.js,requires-body=true,timeout=30,tag=让我喵喵解锁(兼容)
+
+[Mitm]
+hostname = www.pdreamer.com
+
+# ============ 说明 ============
+# 1. v3 脚本不再整段伪造响应，而是解析原始响应、只把会员字段改成 SVIP，
+#    你的真实昵称/头像/userId 都会保留。
+# 2. 脚本内有 URL 路径检查：只有 getUserInfo/userInfo 类接口会被改写，
+#    会员购买页等其它接口原样放行，不会误伤。
+# 3. 用法：安装插件 → 确认 MITM 开启且证书已信任 → 打开让我喵喵 App，
+#    看"我的"页面是否显示 SVIP/会员已开通。
+# 4. 若 App 升级后失效，把 Loon 日志里 [让我喵喵v3] 的行发出来再看。
