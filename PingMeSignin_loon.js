@@ -1,9 +1,13 @@
 /*
   [muse-TCS/rwmm-vip-scripts 存档说明]
-  本文件同步自 fmz200/wool_scripts 原版（2026-10-01）
+  基于 fmz200/wool_scripts 原版（2026-10-01 同步）的本地优化版
   https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/PingMe/PingMeSignin.js
-  本地修改：补上参数缺失/损坏两个分支在 $.done() 后缺失的 return（原版会继续往下执行再抛错）
-  存储 key 与 pingme_capture_loon.js 共用 pingme_capture_v3，可直接替换旧版使用
+  本地修改：
+   1. 补上参数缺失/损坏两个分支在 $.done() 后缺失的 return
+   2. 网络抖动自动重试（3 次，退避 1.5s）+ 请求超时显式 15s
+   3. 视频失败分类处理：验证码/次数上限优雅停止并提示手动，网络抖动不直接判死
+   4. 通知首行显示本次收益合计（最新余额 - 运行前余额）
+  未改动：签名算法、真实设备 ID（不碰伪造设备那套）、存储 key pingme_capture_v3
 */
 /*
 @Name：PingMe 自动化签到+视频奖励
@@ -33,6 +37,9 @@ const ckKey = 'pingme_capture_v3';
 const SECRET = '0fOiukQq7jXZV2GRi9LGlO';
 const MAX_VIDEO = 5;
 const VIDEO_DELAY = 8000;
+const NETWORK_RETRIES = 3;
+const RETRY_DELAY = 1500;
+const REQ_TIMEOUT = 15000;
 
 // 执行开始
 startTasks().then(r => $.done());
@@ -62,9 +69,22 @@ async function startTasks() {
     console.log("组装请求头");
     const headers = buildHeaders(capture);
 
-    function fetchApi(path) {
-        // return $task.fetch({ url: buildUrl(path, capture), method: 'GET', headers });
-        return $.http.get({url: buildUrl(path, capture), headers: headers});
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function isNetworkError(err) {
+        const m = (err && (err.error || err.message)) || String(err || '');
+        return /timeout|timed out|SSL|reset|connection|network|stream closed|closed|EOF|abort/i.test(m);
+    }
+
+    function fetchApi(path, retry) {
+        retry = (retry === undefined) ? NETWORK_RETRIES : retry;
+        return $.http.get({url: buildUrl(path, capture), headers: headers, timeout: REQ_TIMEOUT}).catch(err => {
+            if (retry > 0 && isNetworkError(err)) {
+                console.log(`网络抖动，${RETRY_DELAY}ms 后重试 (${NETWORK_RETRIES - retry + 1}/${NETWORK_RETRIES})：${path}`);
+                return sleep(RETRY_DELAY).then(() => fetchApi(path, retry - 1));
+            }
+            throw err;
+        });
     }
 
     function doVideoLoop(count) {
@@ -81,6 +101,9 @@ async function startTasks() {
                             if (d.retcode === 0) {
                                 $.nodeNotifyMsg.push(`🎬 视频${i}：+${d.result?.bonus || '?'} Coins`);
                                 resolve(next());
+                            } else if (/验证码|captcha/i.test(d.retmsg || '')) {
+                                $.nodeNotifyMsg.push(`⏸ 视频${i}：${d.retmsg}（需手动完成）`);
+                                resolve();
                             } else {
                                 $.nodeNotifyMsg.push(`⏸ 视频${i}：${d.retmsg}`);
                                 resolve();
@@ -100,10 +123,15 @@ async function startTasks() {
         return next();
     }
 
+    let beforeBalance = null;
+
     return fetchApi('queryBalanceAndBonus').then(res => {
         try {
             const d = JSON.parse(res.body);
-            if (d.retcode === 0) $.nodeNotifyMsg.push(`💰 运行前余额：${d.result.balance} Coins`); else $.nodeNotifyMsg.push(`⚠️ 查询：${d.retmsg}`);
+            if (d.retcode === 0) {
+                beforeBalance = parseFloat(d.result.balance);
+                $.nodeNotifyMsg.push(`💰 运行前余额：${d.result.balance} Coins`);
+            } else $.nodeNotifyMsg.push(`⚠️ 查询：${d.retmsg}`);
         } catch (e) {
             $.nodeNotifyMsg.push('❌ 查询：解析失败');
         }
@@ -121,7 +149,14 @@ async function startTasks() {
     }).then(async res => {
         try {
             const d = JSON.parse(res.body);
-            if (d.retcode === 0) $.nodeNotifyMsg.unshift(`💰 最新余额：${d.result.balance} Coins`);
+            if (d.retcode === 0) {
+                const after = parseFloat(d.result.balance);
+                let line = `💰 最新余额：${d.result.balance} Coins`;
+                if (beforeBalance !== null && !isNaN(after)) {
+                    line += `（本次 +${(after - beforeBalance).toFixed(3)}）`;
+                }
+                $.nodeNotifyMsg.unshift(line);
+            }
         } catch (e) {
             console.log("查询最新余额失败！");
         }
