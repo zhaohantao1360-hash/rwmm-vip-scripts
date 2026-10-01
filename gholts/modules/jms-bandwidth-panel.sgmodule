@@ -1,0 +1,10 @@
+#!name=JMS Bandwidth Panel
+#!desc=Track monthly Just My Socks bandwidth from its API.\nSee used and remaining data, usage percentage, and the reset day when available.
+#!category=gholts
+#!arguments=service, id
+
+[Script]
+jms-bandwidth-panel = type=generic,script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/gholts/scripts/jms-bandwidth-panel.js,argument=service={{{service}}}&id={{{id}}},timeout=8
+
+[Panel]
+JMSBandwidth = title="JMS Bandwidth",content="Loading...",style=info,script-name=jms-bandwidth-panel,update-interval=3600
