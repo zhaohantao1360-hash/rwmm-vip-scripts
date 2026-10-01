@@ -1,0 +1,20 @@
+#!name = 让我喵喵 - 会员解锁 (v6诊断版)
+#!desc = v6诊断版：逻辑与 v5 一致，每次处理后用系统通知上报 URL 与动作，用于定位真实广告接口。旧版 v3/v4/v5 文件保留在仓库中备用。
+#!author = 哎呀漫鸭 & AI改写
+#!tag = 解锁,工具
+#!type = normal
+
+[Script]
+# 全站 http-response，脚本内部按 URL 分流：用户信息->解锁，广告/聚合配置->净化，其它->原样放行
+http-response ^https?:\/\/www\.pdreamer\.com script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/%E8%AE%A9%E6%88%91%E5%96%B5%E5%96%B5v6.js,requires-body=true,timeout=30,tag=让我喵喵v6
+
+[Mitm]
+hostname = www.pdreamer.com
+
+# ============ 说明 ============
+# 1. v6 = v5 逻辑 + 系统通知上报。安装后打开 App，每次脚本处理都会弹一条
+#    通知，标题为"让我喵喵v6"，内容为处理动作 + URL 路径。把通知内容发回来即可定位。
+# 2. 若弹窗仍在：复现一次 -> Loon 日志搜索"让我喵喵" -> 把相关行发出来，
+#    能看到真实命中的广告接口地址，再针对性处理。
+# 3. 旧版 v3/v4 的文件（让我喵喵v3.js、让我喵喵v4.js、让我喵喵.lpx、让我喵喵v4.lpx）
+#    未动，仍在仓库中备用；若 v5 有异常，装回旧插件即可。
