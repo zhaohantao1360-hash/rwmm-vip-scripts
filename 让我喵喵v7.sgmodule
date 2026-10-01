@@ -1,0 +1,10 @@
+#!name=让我喵喵 - 会员解锁 (v7静默版)
+#!desc=v7静默版：会员解锁（保留真实资料）+ 广告/聚合配置净化。由 Loon 版转换而来，逻辑与 Loon v7 完全一致。
+#!author=哎呀漫鸭 & AI改写
+#!icon=https://resource.wuyra.com/Icon/App_icon/120px/WeChat.png
+
+[Script]
+让我喵喵v7 = type=http-response,pattern=^https?:\/\/www\.pdreamer\.com,requires-body=true,timeout=30,script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/%E8%AE%A9%E6%88%91%E5%96%B5%E5%96%B5v7.js
+
+[MITM]
+hostname = %APPEND% www.pdreamer.com
