@@ -1,0 +1,20 @@
+#!name = 让我喵喵 - 会员解锁 (v5去广告弹窗)
+#!desc = v5: 会员解锁（保留真实资料）+ 广告/聚合配置净化（失败状态改写成空成功+广告字段置空），尝试消除"广告初始化失败(csj)"弹窗。规则放宽到整个 www.pdreamer.com，脚本内部分流并记录 URL。旧版 v3/v4 文件保留在仓库中备用。
+#!author = 哎呀漫鸭 & AI改写
+#!tag = 解锁,工具
+#!type = normal
+
+[Script]
+# 全站 http-response，脚本内部按 URL 分流：用户信息->解锁，广告/聚合配置->净化，其它->原样放行
+http-response ^https?:\/\/www\.pdreamer\.com script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/%E8%AE%A9%E6%88%91%E5%96%B5%E5%96%B5v5.js,requires-body=true,timeout=30,tag=让我喵喵v5
+
+[Mitm]
+hostname = www.pdreamer.com
+
+# ============ 说明 ============
+# 1. v5 把匹配规则放宽到整个 www.pdreamer.com，脚本内部按 URL 分流处理，
+#    并在日志里记录所有经过的 URL（[让我喵喵v5] 经过: ...）。
+# 2. 若弹窗仍在：复现一次 -> Loon 日志搜索"让我喵喵" -> 把相关行发出来，
+#    能看到真实命中的广告接口地址，再针对性处理。
+# 3. 旧版 v3/v4 的文件（让我喵喵v3.js、让我喵喵v4.js、让我喵喵.lpx、让我喵喵v4.lpx）
+#    未动，仍在仓库中备用；若 v5 有异常，装回旧插件即可。
