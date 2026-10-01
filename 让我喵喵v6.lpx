@@ -6,7 +6,7 @@
 
 [Script]
 # 全站 http-response，脚本内部按 URL 分流：用户信息->解锁，广告/聚合配置->净化，其它->原样放行
-http-response ^https?:\/\/www\.pdreamer\.com script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/%E8%AE%A9%E6%88%91%E5%96%B5%E5%96%B5v5.js,requires-body=true,timeout=30,tag=让我喵喵v6
+http-response ^https?:\/\/www\.pdreamer\.com script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/%E8%AE%A9%E6%88%91%E5%96%B5%E5%96%B5v6.js,requires-body=true,timeout=30,tag=让我喵喵v6
 
 [Mitm]
 hostname = www.pdreamer.com
