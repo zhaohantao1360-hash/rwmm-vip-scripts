@@ -1,0 +1,12 @@
+# 漫画源直连规则集 (ComicDirect.list)
+# 用途：把以下漫画站点的流量走 DIRECT（直连），不经过代理
+# 注意：这些站点在国内多数被墙，直连可能打不开；若图片加载失败，删掉引用行或把策略改回代理即可
+# Loon 引用：RULE-SET,https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/ComicDirect.list,DIRECT
+# Surge 引用：RULE-SET,https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/ComicDirect.list,DIRECT
+
+DOMAIN-SUFFIX,ikanmh.xyz
+DOMAIN-SUFFIX,jjmhw9.top
+DOMAIN-SUFFIX,baozimh.org
+DOMAIN-SUFFIX,baozimh.one
+DOMAIN-SUFFIX,55comic.com
+DOMAIN-SUFFIX,shilunart.com
