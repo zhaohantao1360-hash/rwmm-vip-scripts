@@ -1,0 +1,28 @@
+#!name = WeTalk自动化任务
+#!desc = WeTalk 自动化签到 + 5 次视频奖励；按 email 区分多账号。抓包脚本与定时任务共用同一脚本（内嵌 Env.js，原生支持 Loon，无需转写），script-path 直接引用作者原版，自动同步上游更新。
+#!author = 怎么肥事 & yaowuliu
+#!homepage = https://github.com/158212892/QuantumultXMark
+#!icon = https://play-lh.googleusercontent.com/5ZrUOlwaiR80ExEfuakPVmDeOkXYSwbdv_BisCpt_wd6SLV6NZQyY2LuAcEnK32v2q1eWU8Ga40lBxwH7QGI=w480-h960-rw
+#!tag = 签到,工具
+#!type = normal
+
+[Argument]
+cronTask = input,"20 8,20 * * *",tag=定时任务,desc=cron 表达式（分 时 日 月 周）；默认每天 8:20 和 20:20 各跑一次
+capture = switch,true,tag=账号抓取,desc=关闭后抓包脚本不再处理任何请求；抓到账号后建议关闭
+
+[General]
+script-update-interval = 86400
+
+[Script]
+cron {cronTask} script-path=https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Scripts/WeTalk.js,timeout=300,tag=WeTalk签到
+http-request ^https:\/\/api\.wetalkapp\.com\/app\/queryBalanceAndBonus script-path=https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Scripts/WeTalk.js,tag=WeTalk账号抓取,timeout=10,requires-body=false,enable={capture}
+
+[Mitm]
+hostname = api.wetalkapp.com
+
+# ============ 说明 ============
+# 1. 脚本已内嵌 Env.js 多环境适配层，Loon 里可直接运行，无需改写。
+# 2. script-path 引用作者原版地址，上游更新会自动同步（每天检查一次）。
+#    如想固定版本，把 My/Scripts/WeTalk.js 拷到自己的仓库后替换这两处地址即可。
+# 3. 用法：安装插件 → 打开 WeTalk App 触发一次余额查询（收到"新账号已入库"通知）→ 关闭账号抓取开关。
+#    存储 key：wetalk_accounts_v1（按 email 区分多账号）。
