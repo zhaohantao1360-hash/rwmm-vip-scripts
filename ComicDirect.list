@@ -1,17 +1,75 @@
 # 漫画源直连规则集 (ComicDirect.list)
-# 用途：把以下漫画站点的流量走 DIRECT（直连），不经过代理
-# 注意：这些站点在国内多数被墙，直连可能打不开；若图片加载失败，删掉引用行或把策略改回代理即可
+# 用途：把漫画源站点（含 API / 图片 CDN 域名）的流量走 DIRECT（直连），不经过代理
+# 来源：2026-10-01 用户提供的 EvilMeow 漫画源校验日志（62 条规则）提取的全部漫画相关域名
+# 注意：部分站点在国内可能被墙，直连打不开时删掉对应行或把引用策略改回代理即可
+# 已排除：shilunart.com / dingmanhua.com / zcymh.com / happymh.com（日志中标注站点已无/不维护）
+#        googletagmanager.com、cdnjs.cloudflare.com（统计/JS库，非漫画流量）
 # Loon 引用：RULE-SET,https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/ComicDirect.list,DIRECT
 # Surge 引用：RULE-SET,https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/ComicDirect.list,DIRECT
-# 2026-10-01 核验：shilunart.com 已确认为停放域名（This domain is for sale），已移除
 
+DOMAIN-SUFFIX,2cycomic.com
+DOMAIN-SUFFIX,325784.xyz
+DOMAIN-SUFFIX,36mh.org
+DOMAIN-SUFFIX,43manhua.org
+DOMAIN-SUFFIX,546457.xyz
+DOMAIN-SUFFIX,55comic.com
+DOMAIN-SUFFIX,6wm.top
+DOMAIN-SUFFIX,91jmd.com
+DOMAIN-SUFFIX,antbyw.com
+DOMAIN-SUFFIX,autobuddysg.com
+DOMAIN-SUFFIX,baicaimh.org
+DOMAIN-SUFFIX,baozimh.com
+DOMAIN-SUFFIX,baozimh.one
+DOMAIN-SUFFIX,baozimh.org
+DOMAIN-SUFFIX,baozimhapp.com
+DOMAIN-SUFFIX,bengou.co
+DOMAIN-SUFFIX,bzcdn.net
+DOMAIN-SUFFIX,cdndm5.com
+DOMAIN-SUFFIX,colacomic.com
+DOMAIN-SUFFIX,copy2000.online
+DOMAIN-SUFFIX,copy2000.site
+DOMAIN-SUFFIX,copy4000.com
+DOMAIN-SUFFIX,cuimanhua.com
+DOMAIN-SUFFIX,dogemanga.com
+DOMAIN-SUFFIX,dongmanmanhua.cn
+DOMAIN-SUFFIX,dzmanga.com
+DOMAIN-SUFFIX,dzwww.com
+DOMAIN-SUFFIX,ecombdimg.com
+DOMAIN-SUFFIX,favcomic.com
+DOMAIN-SUFFIX,feifeimh.cc
+DOMAIN-SUFFIX,fengchemh.com
+DOMAIN-SUFFIX,go2778.com
+DOMAIN-SUFFIX,gufengmh9.com
+DOMAIN-SUFFIX,hqread.cc
 DOMAIN-SUFFIX,ikanmh.xyz
 DOMAIN-SUFFIX,jjmhw9.top
-DOMAIN-SUFFIX,baozimh.org
-DOMAIN-SUFFIX,baozimh.one
-DOMAIN-SUFFIX,55comic.com
-DOMAIN-SUFFIX,gufengmh9.com
-DOMAIN-SUFFIX,mhkami.com
-DOMAIN-SUFFIX,wmh1234.com
-DOMAIN-SUFFIX,kukanmanhua.com
+DOMAIN-SUFFIX,justpic01pt.com
+DOMAIN-SUFFIX,kaimanhua.com
+DOMAIN-SUFFIX,kanman.com
+DOMAIN-SUFFIX,kingwar.cn
+DOMAIN-SUFFIX,komiic.cc
 DOMAIN-SUFFIX,kukanmanhua.buzz
+DOMAIN-SUFFIX,kukanmanhua.com
+DOMAIN-SUFFIX,kukuc.net
+DOMAIN-SUFFIX,manben.com
+DOMAIN-SUFFIX,mangafunb.fun
+DOMAIN-SUFFIX,manhuazhan.com
+DOMAIN-SUFFIX,mgsearcher.com
+DOMAIN-SUFFIX,mh160.cc
+DOMAIN-SUFFIX,mhkami.com
+DOMAIN-SUFFIX,mkzcdn.com
+DOMAIN-SUFFIX,mqzjw.com
+DOMAIN-SUFFIX,niaopic.com
+DOMAIN-SUFFIX,qimanwu.org
+DOMAIN-SUFFIX,rumanhua1.com
+DOMAIN-SUFFIX,tupian.run
+DOMAIN-SUFFIX,twmanga.com
+DOMAIN-SUFFIX,veryim.com
+DOMAIN-SUFFIX,wmh1234.com
+DOMAIN-SUFFIX,wszwhg.net
+DOMAIN-SUFFIX,xayao4.com
+DOMAIN-SUFFIX,xiaoqinre.com
+DOMAIN-SUFFIX,xinmanhua.net
+DOMAIN-SUFFIX,yqmh.com
+DOMAIN-SUFFIX,yydsmh.com
+DOMAIN-SUFFIX,yymanhua.com
