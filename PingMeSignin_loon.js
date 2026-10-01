@@ -7,6 +7,7 @@
    2. 网络抖动自动重试（3 次，退避 1.5s）+ 请求超时显式 15s
    3. 视频失败分类处理：验证码/次数上限优雅停止并提示手动，网络抖动不直接判死
    4. 通知首行显示本次收益合计（最新余额 - 运行前余额）
+   5. 签到成功/服务端确认已签过后记下日期，当天后续轮次跳过 checkIn 接口（每天只调一次，防刷出限流）
   未改动：签名算法、真实设备 ID（不碰伪造设备那套）、存储 key pingme_capture_v3
 */
 /*
@@ -123,6 +124,13 @@ async function startTasks() {
         return next();
     }
 
+    const CHECKIN_FLAG = 'pingme_checkin_done_v1';
+
+    function localToday() {
+        const n = new Date(), p = x => String(x).padStart(2, '0');
+        return `${n.getFullYear()}-${p(n.getMonth() + 1)}-${p(n.getDate())}`;
+    }
+
     let beforeBalance = null;
 
     return fetchApi('queryBalanceAndBonus').then(res => {
@@ -135,13 +143,28 @@ async function startTasks() {
         } catch (e) {
             $.nodeNotifyMsg.push('❌ 查询：解析失败');
         }
+        if ($.getdata(CHECKIN_FLAG) === localToday()) {
+            $.nodeNotifyMsg.push('⏭ 签到：今日已签过，跳过');
+            return null;
+        }
         return fetchApi('checkIn');
     }).then(res => {
-        try {
-            const d = JSON.parse(res.body);
-            if (d.retcode === 0) $.nodeNotifyMsg.push(`✅ 签到：${(d.result?.bonusHint || d.retmsg || '').replace(/\n/g, ' ')}`); else $.nodeNotifyMsg.push(`⚠️ 签到：${d.retmsg}`);
-        } catch (e) {
-            $.nodeNotifyMsg.push('❌ 签到：解析失败');
+        if (res) {
+            try {
+                const d = JSON.parse(res.body);
+                const msg = (d.result?.bonusHint || d.retmsg || '').replace(/\n/g, ' ');
+                if (d.retcode === 0) {
+                    $.nodeNotifyMsg.push(`✅ 签到：${msg}`);
+                    $.setdata(localToday(), CHECKIN_FLAG);
+                } else if (/已经签过|已签到/i.test(d.retmsg || '')) {
+                    $.nodeNotifyMsg.push(`⚠️ 签到：${d.retmsg}`);
+                    $.setdata(localToday(), CHECKIN_FLAG);
+                } else {
+                    $.nodeNotifyMsg.push(`⚠️ 签到：${d.retmsg}`);
+                }
+            } catch (e) {
+                $.nodeNotifyMsg.push('❌ 签到：解析失败');
+            }
         }
         return doVideoLoop(MAX_VIDEO);
     }).then(() => {
