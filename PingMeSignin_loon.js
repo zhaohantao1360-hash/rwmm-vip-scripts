@@ -4,7 +4,7 @@
   https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/PingMe/PingMeSignin.js
   本地修改：
    1. 补上参数缺失/损坏两个分支在 $.done() 后缺失的 return
-   2. 网络抖动自动重试（3 次，退避 1.5s）+ 请求超时显式 15s
+   2. 网络抖动自动重试（3 次，退避 1.5s）+ 请求超时显式 15s；重试仅用于只读的余额查询，签到/视频接口不重试（防重复计次）
    3. 视频失败分类处理：验证码/次数上限优雅停止并提示手动，网络抖动不直接判死
    4. 通知首行显示本次收益合计（最新余额 - 运行前余额）
    5. 签到成功/服务端确认已签过后记下日期，当天后续轮次跳过 checkIn 接口（每天只调一次，防刷出限流）
@@ -77,6 +77,8 @@ async function startTasks() {
         return /timeout|timed out|SSL|reset|connection|network|stream closed|closed|EOF|abort/i.test(m);
     }
 
+    // 注意：只有幂等的余额查询允许重试；签到/视频按次数限流，绝不重试
+    //（重试会带上新的时间戳+随机数，服务端会当成新的次数）
     function fetchApi(path, retry) {
         retry = (retry === undefined) ? NETWORK_RETRIES : retry;
         return $.http.get({url: buildUrl(path, capture), headers: headers, timeout: REQ_TIMEOUT}).catch(err => {
@@ -96,7 +98,7 @@ async function startTasks() {
             return new Promise(resolve => {
                 setTimeout(() => {
                     i++;
-                    fetchApi('videoBonus').then(res => {
+                    fetchApi('videoBonus', 0).then(res => {
                         try {
                             const d = JSON.parse(res.body);
                             if (d.retcode === 0) {
@@ -147,7 +149,7 @@ async function startTasks() {
             $.nodeNotifyMsg.push('⏭ 签到：今日已签过，跳过');
             return null;
         }
-        return fetchApi('checkIn');
+        return fetchApi('checkIn', 0);
     }).then(res => {
         if (res) {
             try {
