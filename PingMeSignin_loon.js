@@ -23,7 +23,7 @@ function sleep(ms) {
 
 function httpGetJSON(url, headers) {
   return new Promise((resolve, reject) => {
-    $httpClient.get({ url: url, headers: headers, timeout: 30 }, (err, resp, data) => {
+    $httpClient.get({ url: url, headers: headers, timeout: 15000 }, (err, resp, data) => {
       if (err) return reject(err);
       try {
         resolve(JSON.parse(data));
