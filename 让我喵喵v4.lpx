@@ -1,0 +1,24 @@
+#!name = 让我喵喵 - 会员解锁 (v4去广告弹窗)
+#!desc = v4: 会员解锁（保留真实资料）+ 净化广告/聚合配置，尝试消除"广告初始化失败(csj)"弹窗。旧版 v3（让我喵喵v3.js / 让我喵喵.lpx）保留在仓库中备用。
+#!author = 哎呀漫鸭 & AI改写
+#!tag = 解锁,工具
+#!type = normal
+
+[Script]
+# 用户信息接口（会员解锁）
+http-response ^https?:\/\/www\.pdreamer\.com\/aymyProd\/api\/getUserInfo script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/%E8%AE%A9%E6%88%91%E5%96%B5%E5%96%B5v4.js,requires-body=true,timeout=30,tag=让我喵喵v4
+http-response ^https?:\/\/www\.pdreamer\.com.*?[uU]serInfo script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/%E8%AE%A9%E6%88%91%E5%96%B5%E5%96%B5v4.js,requires-body=true,timeout=30,tag=让我喵喵v4(兼容)
+# 广告/聚合配置接口（净化广告字段；最终由脚本内二次确认）
+http-response ^https?:\/\/www\.pdreamer\.com.*(ad|Ad|AD|banner|Banner|splash|Splash|csj|CSJ|pangolin|mediat|Mediat|gdt) script-path=https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/%E8%AE%A9%E6%88%91%E5%96%B5%E5%96%B5v4.js,requires-body=true,timeout=30,tag=让我喵喵v4(去广告)
+
+[Mitm]
+hostname = www.pdreamer.com
+
+# ============ 说明 ============
+# 1. v4 = v3 的会员解锁（保留真实昵称/头像）+ 新增广告配置净化。
+# 2. 净化逻辑：解析广告/聚合配置接口的 JSON，递归把广告相关字段置空
+#    （列表->[]、开关->false），让 SDK 以为"初始化成功但无广告可播"。
+# 3. 旧版 v3 的两个文件（让我喵喵v3.js、让我喵喵.lpx）未动，仍在仓库中备用；
+#    若 v4 有异常，装回旧插件即可。
+# 4. 若弹窗仍在：把 Loon 日志里 [让我喵喵v4] 的行发出来，
+#    能看到实际命中的广告接口地址，再针对性处理。
