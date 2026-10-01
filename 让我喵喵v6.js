@@ -27,19 +27,18 @@
 
     console.log('[让我喵喵v6] 经过: ' + path);
 
-    var action = '原样放行';
-    if (/getuserinfo|userinfo/.test(lpath)) {
-        action = '会员解锁';
-        handleUserInfo(url);
-    } else if (/(adconfig|ad_config|adunion|ad_union|getad|adlist|banner|splash|csj|pangolin|mediation|union|agg|gdt|advert)/.test(lpath)) {
-        action = handleAdConfig(url);
-    } else {
-        $done({});
-    }
+    // 注意：通知必须在 $done() 之前发送，否则不会执行
+    var isUser = /getuserinfo|userinfo/.test(lpath);
+    var isAd = /(adconfig|ad_config|adunion|ad_union|getad|adlist|banner|splash|csj|pangolin|mediation|union|agg|gdt|advert)/.test(lpath);
+    var action = isUser ? '会员解锁' : (isAd ? adSummary() : '原样放行');
     try {
         $notification.post('让我喵喵v6', action, path.length > 120 ? path.substring(0, 120) + '...' : path);
     } catch (e) {}
     console.log('[让我喵喵v6] ' + action + ': ' + path);
+
+    if (isUser) { handleUserInfo(url); return; }
+    if (isAd) { handleAdConfig(url); return; }
+    $done({});
 })();
 
 function fmtDate(d) {
@@ -136,7 +135,7 @@ function handleAdConfig(url) {
     if (!obj || typeof obj !== 'object') {
         console.log('[让我喵喵v6] 疑似广告接口但响应非 JSON，原样放行: ' + url);
         $done({});
-        return '疑似广告接口/非JSON/已放行';
+        return;
     }
 
     // 状态字段若表示失败 -> 改写成空成功响应
@@ -153,10 +152,21 @@ function handleAdConfig(url) {
     }
 
     var clean = sanitizeAds(obj);
-    var keys = Object.keys(obj).slice(0, 8).join(',');
     console.log('[让我喵喵v6] 已净化广告配置: ' + url);
     $done({ body: JSON.stringify(clean) });
-    return '广告配置已处理' + (failed ? '(失败改写为空成功)' : '') + ' keys:' + keys;
+}
+
+// 预读广告接口响应生成摘要（只读，不调用 $done）
+function adSummary() {
+    try {
+        var raw = $response && $response.body;
+        var obj = raw ? JSON.parse(raw) : null;
+        if (!obj || typeof obj !== 'object') return '疑似广告接口/非JSON';
+        var code = ('code' in obj) ? ('code=' + obj.code) : '';
+        return '广告配置处理 ' + code + ' keys:' + Object.keys(obj).slice(0, 8).join(',');
+    } catch (e) {
+        return '疑似广告接口/解析失败';
+    }
 }
 
 // 判断是否为广告相关字段名（驼峰转下划线后再匹配，避免误伤 download/header/already 等）
