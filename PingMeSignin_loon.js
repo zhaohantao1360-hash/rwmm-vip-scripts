@@ -74,7 +74,7 @@ async function startTasks() {
 
     function isNetworkError(err) {
         const m = (err && (err.error || err.message)) || String(err || '');
-        return /timeout|timed out|SSL|reset|connection|network|stream closed|closed|EOF|abort/i.test(m);
+        return /timeout|timed out|超时|SSL|reset|connection|network|stream closed|closed|EOF|abort/i.test(m);
     }
 
     // 注意：只有幂等的余额查询允许重试；签到/视频按次数限流，绝不重试
