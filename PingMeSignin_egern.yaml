@@ -1,0 +1,43 @@
+name: PingMe签到·新版
+description: PingMe 每日签到 + 视频奖励（fmz200 原版逻辑 + 本地优化）。相对旧版：全程使用真实设备 ID（不再每轮伪造，旧版伪造设备是触发服务端风控的主因）；重试仅用于余额查询；今日已签过自动跳过签到接口；通知显示本次收益。默认每天 0 点起每 4 小时运行一次。注意：请先停用旧版 PingMe 模块，避免两个任务抢同一份额度。
+compat_arguments:
+  arg3: '0 */4 * * *'
+compat_arguments_schema:
+  arg3:
+    name: PM定时
+    default_value: '0 */4 * * *'
+env:
+  PINGME_CAPTURE: 'true'
+env_schema:
+  PINGME_CAPTURE:
+    name: 抓参开关
+    description: 打开后进 PingMe App 触发一次余额查询即自动抓取签到参数，抓到后建议关闭（false）
+    default_value: 'true'
+    options:
+    - 'true'
+    - 'false'
+author: muse（基于 fmz200/wool_scripts 原版逻辑优化）
+icon: https://raw.githubusercontent.com/axhani/icon/refs/heads/main/pingme&wetalk.png
+dns: {}
+rules:
+- domain:
+    match: api.pingmeapp.net
+    # 2026-10-02 实测：经代理到 api.pingmeapp.net 会 hang 住超时，直连正常
+    policy: DIRECT
+scriptings:
+- schedule:
+    name: PingMe签到
+    cron: '{{{arg3}}}'
+    script_url: https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/PingMeSignin_egern.js
+    timeout: 300
+    update_interval: 3600
+- http_request:
+    name: PingMe获取签到参数
+    match: ^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus
+    script_url: https://raw.githubusercontent.com/zhaohantao1360-hash/rwmm-vip-scripts/refs/heads/main/pingme_capture_egern.js
+    timeout: 60
+    update_interval: 3600
+mitm:
+  hostnames:
+    includes:
+    - api.pingmeapp.net
