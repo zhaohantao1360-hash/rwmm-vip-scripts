@@ -2,10 +2,15 @@ name: PingMe签到·新版
 description: PingMe 每日签到 + 视频奖励（fmz200 原版逻辑 + 本地优化）。相对旧版：全程使用真实设备 ID（不再每轮伪造，旧版伪造设备是触发服务端风控的主因）；重试仅用于余额查询；今日已签过自动跳过签到接口；通知显示本次收益。默认每天 0 点起每 4 小时运行一次。注意：请先停用旧版 PingMe 模块，避免两个任务抢同一份额度。
 compat_arguments:
   arg3: '0 */4 * * *'
+  PROXY: DIRECT
 compat_arguments_schema:
   arg3:
     name: PM定时
     default_value: '0 */4 * * *'
+  PROXY:
+    name: 代理策略
+    description: api.pingmeapp.net 走哪个策略。默认 DIRECT（直连，实测稳定）；想试 0.004 可改为美国节点策略组，名称需与 Egern 配置中完全一致
+    default_value: DIRECT
 env:
   PINGME_CAPTURE: 'true'
 env_schema:
@@ -22,8 +27,9 @@ dns: {}
 rules:
 - domain:
     match: api.pingmeapp.net
-    # 2026-10-02 实测：经代理到 api.pingmeapp.net 会 hang 住超时，直连正常
-    policy: DIRECT
+    # 2026-10-02 实测：Loon 经代理到 api.pingmeapp.net 会 hang 住超时，直连正常；
+    # 2026-10-03：策略改为可在模块设置里配置（PROXY 参数），默认 DIRECT
+    policy: PROXY
 scriptings:
 - schedule:
     name: PingMe签到
